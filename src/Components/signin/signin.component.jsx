@@ -64,7 +64,7 @@ const SignIn = () => {
       console.log(response, "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
       let data = response.data
       sessionStorage.setItem("accessToken", data.accessToken)
-      navigate('/');
+      navigate('/dashboard');
 
     })
       .catch((err) => {

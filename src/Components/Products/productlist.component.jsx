@@ -2,20 +2,21 @@ import { useState, useEffect } from 'react';
 import moment from 'moment';
 import BorderColorTwoToneIcon from '@mui/icons-material/BorderColorTwoTone';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 import Title from '../Title/title.component';
-import { Table, TableBody, TableCell, TableHead, TableRow, Grid, Paper } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead, TableRow, Grid, Paper, Button, Box } from '@mui/material';
 import { getAllProducts } from '../../services/productservice';
 import CommonComp from '../Common/common.component'
 
 
 
 const ProductList = () => {
-
+  let accessToken = sessionStorage.getItem("accessToken")
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const getProducts = async () => {
-      const response = await getAllProducts();
+      const response = await getAllProducts(accessToken);
       setProducts(response.data)
     }
     getProducts();
@@ -25,7 +26,17 @@ const ProductList = () => {
     <CommonComp >
       <Grid item xs={12}>
         <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-          <Title>Products</Title>
+          <Grid container spacing={4} mb={4}>
+            <Grid item xs={10}>
+              <Title>Products</Title>
+            </Grid>
+            <Grid item xs={2}>
+              <Link to={`/add-new`} style={{ textDecoration: 'none' }}>
+                <Button variant="outlined">ADD NEW</Button>
+              </Link>
+            </Grid>
+
+          </Grid>
           <Table size="small">
             <TableHead>
               <TableRow>

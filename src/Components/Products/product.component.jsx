@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import CommonComp from '../Common/common.component'
+import { Link, redirect, useNavigate } from 'react-router-dom';
 import Title from '../Title/title.component';
 import { Box, Grid, FormControl, FormControlLabel, InputLabel, Select, MenuItem, Checkbox, Button, TextField, Paper, ListSubheader, Switch } from '@mui/material';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
@@ -17,7 +18,8 @@ import TreeItem from '@mui/lab/TreeItem';
 
 
 const Products = () => {
-
+  const navigate = useNavigate();
+  let accessToken = sessionStorage.getItem("accessToken")
   const multiCurrencyOption = [
     { title: "inr", value: "inr" },
     { title: "usd", value: "usd" }
@@ -116,7 +118,11 @@ const Products = () => {
 
   const onDataSubmit = async (event) => {
     event.preventDefault();
-    let response = await addProductFn(formData)
+    let response = await addProductFn(formData, accessToken)
+    if (response.status === true) {
+      navigate('/products');
+    }
+    
   }
 
   const onEditorStateChange = (editorState) => {

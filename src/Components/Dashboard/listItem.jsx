@@ -45,7 +45,7 @@ const MainListItems = () => {
         </ListItemIcon>
         <ListItemText primary="Orders" />
       </ListItemButton>
-      <Link to={`/`} variant="body2">
+      <Link to={`/`} style={{ textDecoration: 'none', color: '#333' }}>
         <ListItemButton>
           <ListItemIcon>
             <PeopleIcon />
@@ -59,14 +59,22 @@ const MainListItems = () => {
         </ListItemIcon>
         <ListItemText primary="Buyers" />
       </ListItemButton>
-      <ListItemButton onClick={handleClick}>
+      <Link to={`/products`} style={{ textDecoration: 'none', color: '#333' }}>
+      <ListItemButton>
+        <ListItemIcon>
+          <LayersIcon />
+        </ListItemIcon>
+        <ListItemText primary="Products" />
+        </ListItemButton>
+        </Link>
+      {/* <ListItemButton onClick={handleClick}>
         <ListItemIcon>
           <LayersIcon />
         </ListItemIcon>
         <ListItemText primary="Products" />
         {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItemButton>
-      <Collapse in={!open} timeout="auto" unmountOnExit>
+      </ListItemButton> */}
+      {/* <Collapse in={!open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <Link to={`/products`} variant="body2">
             <ListItemButton sx={{ pl: 4 }}>
@@ -91,7 +99,7 @@ const MainListItems = () => {
             <ListItemText primary="Delete" />
           </ListItemButton>
         </List>
-      </Collapse>
+      </Collapse> */}
 
     </List>
   )

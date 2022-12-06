@@ -9,15 +9,17 @@ import ProductList from './Components/Products/productlist.component';
 import Products from './Components/Products/product.component';
 
 function App() {
-  const user = sessionStorage.getItem("accessToken");
-
+  const loggedIn = sessionStorage.getItem("accessToken");
+  console.log(loggedIn,"ttttttttttttttttttttttttttttttttttttt")
   return (
     <Routes>
-      <Route path="/dashboard" element={<DashBoardPage />} /> 
-      <Route path="/add-new" element={<Products />} /> 
-      <Route path="/products" element={<ProductList />} /> 
-      <Route path="/" element={<SignInAndSignUpPage />} /> 
-      <Route path="/signup" element={<SignUp />} /> 
+      <Route path="/" element={<SignInAndSignUpPage />} />
+      <Route path="/dashboard" element={<DashBoardPage />} />
+      <Route path="/products" element={<ProductList />} />
+      <Route path="/" element={<SignInAndSignUpPage />} />
+      <Route path="/add-new" element={<Products />} />
+      {/* <Route path="/" element={<SignInAndSignUpPage />} /> */}
+      <Route path="/signup" element={<SignUp />} />
     </Routes>
   );
 }
