@@ -54,7 +54,8 @@ const ProductList = () => {
                 <TableCell>{product.productSKU}</TableCell>
                 <TableCell>{product.price}</TableCell>
                 <TableCell>{moment(product.createdAt).format('DD-MM-YYYY')}</TableCell>
-                <TableCell><BorderColorTwoToneIcon /></TableCell>
+
+                <TableCell> <Link to={`/products/update/` + product.productId} style={{ textDecoration: 'none' , color : '#444' }}><BorderColorTwoToneIcon /></Link></TableCell>
                 <TableCell><DeleteOutlinedIcon /></TableCell>
               </TableRow>
             )

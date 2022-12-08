@@ -7,10 +7,10 @@ import SignUp from './Components/Signup/signup.component'
 import DashBoardPage from './Pages/dashboard/dashboard';
 import ProductList from './Components/Products/productlist.component';
 import Products from './Components/Products/product.component';
+import ProductEdit from './Components/Products/productEdit.component';
 
 function App() {
   const loggedIn = sessionStorage.getItem("accessToken");
-  console.log(loggedIn,"ttttttttttttttttttttttttttttttttttttt")
   return (
     <Routes>
       <Route path="/" element={<SignInAndSignUpPage />} />
@@ -18,6 +18,7 @@ function App() {
       <Route path="/products" element={<ProductList />} />
       <Route path="/" element={<SignInAndSignUpPage />} />
       <Route path="/add-new" element={<Products />} />
+      <Route path="/products/update/:id" element={<ProductEdit />} />
       {/* <Route path="/" element={<SignInAndSignUpPage />} /> */}
       <Route path="/signup" element={<SignUp />} />
     </Routes>

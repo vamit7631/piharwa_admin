@@ -1,2 +1,2 @@
-export { addProductFn, getAllProducts } from './productservice';
+export { addProductFn, getSingleProduct, getAllProducts } from './productservice';
 export { getAllCategories } from './categoryservice';
