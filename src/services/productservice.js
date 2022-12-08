@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_ALL_PRODUCTS, ADD_PRODUCT, GET_SINGLE_PRODUCTS } from "./constants";
+import { GET_ALL_PRODUCTS, ADD_PRODUCT, GET_SINGLE_PRODUCTS, UPDATE_SINGLE_PRODUCT } from "./constants";
 
 
 
@@ -81,6 +81,35 @@ export const getSingleProduct = (id) => {
         resolve(data);
       }).catch((err) => {
         console.log("getSingleProduct > axios err=", err);
+        reject("Error in getAllProducts axios!");
+      })
+
+
+    } catch (err) {
+      reject(err);
+    }
+  });
+
+}
+
+
+export const updateSingleProduct = (formData, accessToken) => {
+  return new Promise((resolve, reject) => {
+    try {
+      axios({
+        method: 'put',
+        url: UPDATE_SINGLE_PRODUCT,
+        data: formData,
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': accessToken
+        }
+      }).then(function (response) {
+        let data = response.data
+        resolve(data);
+      }).catch((err) => {
+        console.log("getAllProducts > axios err=", err);
         reject("Error in getAllProducts axios!");
       })
 

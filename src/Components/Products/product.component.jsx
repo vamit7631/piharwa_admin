@@ -119,8 +119,9 @@ const Products = () => {
   const onDataSubmit = async (event) => {
     event.preventDefault();
     let response = await addProductFn(formData, accessToken)
+    let productID = response.data._id
     if (response.status === true) {
-      navigate('/products');
+      navigate('/products/update/' + productID);
     }
     
   }

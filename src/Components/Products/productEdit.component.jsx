@@ -12,19 +12,23 @@ import { EditorState, convertToRaw } from 'draft-js';
 import { TreeView, TreeItem } from '@mui/lab';
 import FolderIcon from '@mui/icons-material/Folder';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
-
+import { updateSingleProduct } from '../../services/productservice';
 const ProductEdit = () => {
     let pid = useParams();
     let productId = pid.id;
+
+    let accessToken = sessionStorage.getItem("accessToken")
+
     var getInitialValues = () => {
         return {
+            productId: "",
             productTitle: "",
             productSKU: "",
             productCategoryID: "",
             price: "",
             currency: "inr",
             productDescription: "",
-            allowDiscount: "",
+            // allowDiscount: "",
             discountPercentage: "",
             productDetails: "",
             productRating: "",
@@ -47,6 +51,7 @@ const ProductEdit = () => {
             const productData = response.data
             if (response.status == true) {
                 let formValues = getInitialValues();
+                formValues.productId = productId;
                 formValues.productTitle = productData.productTitle
                 formValues.productSKU = productData.productSKU
                 formValues.price = productData.price
@@ -153,7 +158,7 @@ const ProductEdit = () => {
 
     const onDataSubmit = async (event) => {
         event.preventDefault();
-        // let response = await addProductFn(formData, accessToken)
+        let response = await updateSingleProduct(formData, accessToken)
         // if (response.status === true) {
         //   navigate('/products');
         // }
