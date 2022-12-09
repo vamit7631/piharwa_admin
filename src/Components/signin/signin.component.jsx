@@ -13,8 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-const LOGIN_URL = 'http://piharwa.co.in/api/v1/user/login';
+import { getsigninFn } from '../../services/commonservice';
 
 
 function Copyright(props) {
@@ -45,36 +44,18 @@ const SignIn = () => {
     event.preventDefault();
     console.log(email, password)
     let loginData = {
-      email: email,
+      emailId: email,
       password: password
     }
 
-    await axios({
-      method: 'post',
-      url: LOGIN_URL,
-      data: {
-        emailId: loginData.email,
-        password: loginData.password
-      },
-      headers: {
-        'accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then(function (response) {
-      console.log(response, "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
-      let data = response.data
-      sessionStorage.setItem("accessToken", data.accessToken)
+
+
+    let response = await getsigninFn(loginData);
+    if (response.status == true) {
+      let accessToken = response.accessToken
+      sessionStorage.setItem("accessToken", accessToken)
       navigate('/dashboard');
-
-    })
-      .catch((err) => {
-        console.log(err)
-        // if (err.response.status != 200) {
-        //   alert("User Not Registered");
-        // }
-      });
-
-
+    }
   };
 
   return (

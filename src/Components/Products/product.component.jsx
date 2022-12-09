@@ -4,6 +4,7 @@ import { Link, redirect, useNavigate } from 'react-router-dom';
 import Title from '../Title/title.component';
 import { Box, Grid, FormControl, FormControlLabel, InputLabel, Select, MenuItem, Checkbox, Button, TextField, Paper, ListSubheader, Switch } from '@mui/material';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import PermMediaIcon from '@mui/icons-material/PermMedia';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from "react-draft-wysiwyg";
