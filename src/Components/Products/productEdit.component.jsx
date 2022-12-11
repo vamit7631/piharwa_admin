@@ -6,6 +6,8 @@ import { getSingleProduct } from '../../services/productservice'
 import { Box, Grid, FormControl, FormControlLabel, InputLabel, Select, MenuItem, Checkbox, Button, TextField, Paper, ListSubheader, Switch } from '@mui/material';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { Link, redirect, useNavigate, useParams } from 'react-router-dom';
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState, convertToRaw } from 'draft-js';
@@ -38,6 +40,8 @@ const ProductEdit = () => {
 
     }
 
+    let imgUrl = [];
+    let imageObj = [];
 
     useEffect(() => {
         const getCategoriesFn = async () => {
@@ -60,6 +64,8 @@ const ProductEdit = () => {
                 setproductDetails(productData.productDetails)
                 formValues.productDetails = productData.productDetails
                 setFormData(formValues)
+                setThumbnails(productData.thumbnailImgs)
+
             }
 
         }
@@ -143,6 +149,23 @@ const ProductEdit = () => {
     const [categories, setCategories] = useState([]);
     // const [catCheckBox, setCatCheckBox] = useState(false)
     const [categoryVal, setCategoryVal] = useState();
+    const [thumbnails, setThumbnails] = useState([]);
+    const [thumbnailimg, setThumbnailimg] = useState([]);
+
+
+    const handleimageUpload = (e) => {
+      for (let i = 0; i < e.target.files.length; i++) {
+        let imageSrc = URL.createObjectURL(e.target.files[i]);
+        imageObj.push(imageSrc)
+        imgUrl.push(e.target.files[i])
+      }
+      setThumbnailimg(imgUrl)
+      setThumbnails(imageObj);
+  
+    }
+
+
+
 
     const handleChange = (event) => {
         setCategoryVal(event.target.value)
@@ -361,6 +384,37 @@ const ProductEdit = () => {
 
 
                         </Grid>
+
+                        
+
+                        <Grid container spacing={2} mt={6} mb={2} borderTop={1} borderColor={'#ccc'}>
+              {thumbnails.map((imageSrc, index) => (
+                <Box textAlign={'center'}>
+                  <Box key={index} sx={{ display: 'flex', justifyContent: 'center' }} mt={4}>
+                    <Box sx={{ border: 1, borderColor: '#ddd', width: '7rem', height: '7rem', m: 1 }}
+                      display="flex" justifyContent="center" textAlign={'center'} alignItems="center">
+                      <img src={imageSrc} alt="not fount" width={"100px"} height={"100px"} />
+                    </Box>
+                  </Box>
+                </Box>
+              ))}
+
+              <Box sx={{ display: 'flex', justifyContent: 'center' }} mt={4}>
+                <Box sx={{ border: 1, borderColor: '#ddd', width: '7rem', height: '7rem', m: 1 }}
+                  display="flex" justifyContent="center" alignItems="center">
+                  <AddCircleOutlineOutlinedIcon color="disabled" transform='scale(1.8)' />
+                </Box>
+              </Box>
+
+
+
+              <Grid item xs={3} mt={8}>
+                <input id="productImg" type="file" style={{ display: 'none' }} multiple onChange={handleimageUpload} />
+                <InputLabel htmlFor='productImg'> <Button variant="raised" component="span">
+                  <DriveFolderUploadOutlinedIcon transform='scale(1.8)' />
+                </Button></InputLabel>
+              </Grid>
+            </Grid>
 
 
                         <Button

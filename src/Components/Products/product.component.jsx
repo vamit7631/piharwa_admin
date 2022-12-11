@@ -4,13 +4,16 @@ import { Link, redirect, useNavigate } from 'react-router-dom';
 import Title from '../Title/title.component';
 import { Box, Grid, FormControl, FormControlLabel, InputLabel, Select, MenuItem, Checkbox, Button, TextField, Paper, ListSubheader, Switch } from '@mui/material';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import PermMediaIcon from '@mui/icons-material/PermMedia';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import Radio from '@mui/material/Radio';
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { getAllCategories } from '../../services/categoryservice';
-import { addProductFn } from '../../services/productservice'
+import { addProductFn, uploadProductImage } from '../../services/productservice'
 import FolderIcon from '@mui/icons-material/Folder';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import TreeView from '@mui/lab/TreeView';
@@ -72,8 +75,8 @@ const Products = () => {
     }
 
   }
-
-
+  let imgUrl = [];
+  let imageObj = [];
   var initialValues = getInitialValues();
 
   const addFields = (event) => {
@@ -106,6 +109,18 @@ const Products = () => {
     )
   }
 
+  const [thumbnails, setThumbnails] = useState([]);
+  const [thumbnailimg, setThumbnailimg] = useState([]);
+  const handleimageUpload = (e) => {
+    for (let i = 0; i < e.target.files.length; i++) {
+      let imageSrc = URL.createObjectURL(e.target.files[i]);
+      imageObj.push(imageSrc)
+      imgUrl.push(e.target.files[i])
+    }
+    setThumbnailimg(imgUrl)
+    setThumbnails(imageObj);
+
+  }
 
   const handleChange = (event) => {
     setCategoryVal(event.target.value)
@@ -120,11 +135,13 @@ const Products = () => {
   const onDataSubmit = async (event) => {
     event.preventDefault();
     let response = await addProductFn(formData, accessToken)
-    let productID = response.data._id
     if (response.status === true) {
+      let productID = response.data._id
+      for (let i = 0; i < thumbnailimg.length; i++) {
+        await uploadProductImage(productID, thumbnailimg[i], accessToken)
+      }
       navigate('/products/update/' + productID);
     }
-    
   }
 
   const onEditorStateChange = (editorState) => {
@@ -346,9 +363,34 @@ const Products = () => {
 
             </Grid>
 
+            <Grid container spacing={2} mt={6} mb={2} borderTop={1} borderColor={'#ccc'}>
+              {thumbnails.map((imageSrc, index) => (
+                <Box textAlign={'center'}>
+                  <Box key={index} sx={{ display: 'flex', justifyContent: 'center' }} mt={4}>
+                    <Box sx={{ border: 1, borderColor: '#ddd', width: '7rem', height: '7rem', m: 1 }}
+                      display="flex" justifyContent="center" textAlign={'center'} alignItems="center">
+                      <img src={imageSrc} alt="not fount" width={"100px"} height={"100px"} />
+                    </Box>
+                  </Box>
+                </Box>
+              ))}
+
+              <Box sx={{ display: 'flex', justifyContent: 'center' }} mt={4}>
+                <Box sx={{ border: 1, borderColor: '#ddd', width: '7rem', height: '7rem', m: 1 }}
+                  display="flex" justifyContent="center" alignItems="center">
+                  <AddCircleOutlineOutlinedIcon color="disabled" transform='scale(1.8)' />
+                </Box>
+              </Box>
 
 
 
+              <Grid item xs={3} mt={8}>
+                <input id="productImg" type="file" style={{ display: 'none' }} multiple onChange={handleimageUpload} />
+                <InputLabel htmlFor='productImg'> <Button variant="raised" component="span">
+                  <DriveFolderUploadOutlinedIcon transform='scale(1.8)' />
+                </Button></InputLabel>
+              </Grid>
+            </Grid>
 
             <Button
               type="submit"
