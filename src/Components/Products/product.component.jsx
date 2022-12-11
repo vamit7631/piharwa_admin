@@ -66,7 +66,7 @@ const Products = () => {
       price: "",
       currency: "inr",
       productDescription: "",
-      allowDiscount: checked,
+      allowDiscount: false,
       discountPercentage: "",
       productDetails: productDetails,
       productRating: "",
@@ -329,6 +329,10 @@ const Products = () => {
                     <Checkbox checked={checked}
                       onChange={() => {
                         setChecked(!checked)
+                        setFormData((data) => ({
+                          ...data,
+                          allowDiscount: !checked
+                        }))
                       }}
                       name="allowDiscount" />
                   }

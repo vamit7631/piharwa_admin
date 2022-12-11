@@ -10,7 +10,7 @@ import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUpload
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { Link, redirect, useNavigate, useParams } from 'react-router-dom';
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw, convertFromRaw, createWithContent } from 'draft-js';
 import { TreeView, TreeItem } from '@mui/lab';
 import FolderIcon from '@mui/icons-material/Folder';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
@@ -30,7 +30,7 @@ const ProductEdit = () => {
             price: "",
             currency: "inr",
             productDescription: "",
-            // allowDiscount: "",
+            allowDiscount: false,
             discountPercentage: "",
             productDetails: "",
             productRating: "",
@@ -61,11 +61,16 @@ const ProductEdit = () => {
                 formValues.price = productData.price
                 setCurrencyVal(productData.currency)
                 formValues.currency = productData.currency
+
+                setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(productData.productDescription))))
+                formValues.productDescription = productData.productDescription
                 setproductDetails(productData.productDetails)
                 formValues.productDetails = productData.productDetails
                 setFormData(formValues)
                 setThumbnails(productData.thumbnailImgs)
-
+                setChecked(productData.allowDiscount)
+                formValues.allowDiscount = productData.allowDiscount
+                formValues.discountPercentage = productData.discountPercentage
             }
 
         }
@@ -369,6 +374,7 @@ const ProductEdit = () => {
                                         label="Product Percentage"
                                         name="discountPercentage"
                                         autoComplete="product-percentage"
+                                        value={formData.discountPercentage || ""}
                                         onChange={(event) => {
                                             const tempVal = event.target.value;
                                             setFormData((data) => ({
