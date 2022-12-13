@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_ALL_PRODUCTS, ADD_PRODUCT, GET_SINGLE_PRODUCTS, UPDATE_SINGLE_PRODUCT, ADD_PRODUCT_IMAGE } from "./constants";
+import { GET_ALL_PRODUCTS, ADD_PRODUCT, GET_SINGLE_PRODUCTS, UPDATE_SINGLE_PRODUCT, DELETE_SINGLE_PRODUCT, ADD_PRODUCT_IMAGE } from "./constants";
 
 
 
@@ -147,6 +147,39 @@ export const uploadProductImage = (id, image, accessToken) => {
       }).catch((err) => {
         console.log("uploadProductImage > axios err=", err);
         reject("Error in uploadProductImage axios!");
+      })
+
+
+    } catch (err) {
+      reject(err);
+    }
+  });
+
+}
+
+
+
+
+
+
+export const deleteSingleProduct = (id, accessToken) => {
+  console.log(id,"rrrrrrrrrrrrrrrr")
+  return new Promise((resolve, reject) => {
+    try {
+      axios({
+        method: 'put',
+        url: DELETE_SINGLE_PRODUCT + id,
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': accessToken
+        }
+      }).then(function (response) {
+        let data = response.data
+        resolve(data);
+      }).catch((err) => {
+        console.log("deleteSingleProduct > axios err=", err);
+        reject("Error in deleteSingleProduct axios!");
       })
 
 

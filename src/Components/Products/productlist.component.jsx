@@ -5,7 +5,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import { Link, redirect, useNavigate } from 'react-router-dom';
 import Title from '../Title/title.component';
 import { Table, TableBody, TableCell, TableHead, TableRow, Grid, Paper, Button, Box } from '@mui/material';
-import { getAllProducts } from '../../services/productservice';
+import { getAllProducts, deleteSingleProduct } from '../../services/productservice';
 import CommonComp from '../Common/common.component'
 
 
@@ -19,8 +19,18 @@ const ProductList = () => {
       const response = await getAllProducts(accessToken);
       setProducts(response.data)
     }
+
     getProducts();
   }, [])
+
+
+  const deleteProducts = async (event) => {
+    let productId = event.target.id
+    const response = await deleteSingleProduct(productId, accessToken)
+    window.location.reload(); 
+    console.log(response,"delete Product")
+  }
+
 
   return (
     <CommonComp >
@@ -56,7 +66,7 @@ const ProductList = () => {
                 <TableCell>{moment(product.createdAt).format('DD-MM-YYYY')}</TableCell>
 
                 <TableCell> <Link to={`/products/update/` + product.productId} style={{ textDecoration: 'none' , color : '#444' }}><BorderColorTwoToneIcon /></Link></TableCell>
-                <TableCell><DeleteOutlinedIcon /></TableCell>
+                <TableCell><DeleteOutlinedIcon id={product.productId} onClick={event => deleteProducts(event)} /></TableCell>
               </TableRow>
             )
             )} </TableBody>
