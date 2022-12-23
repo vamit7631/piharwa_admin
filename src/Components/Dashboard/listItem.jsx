@@ -21,6 +21,8 @@ const MainListItems = () => {
   const handleClick = () => {
     setOpen(!open);
   };
+  let accessToken = sessionStorage.getItem("accessToken")
+  let role = sessionStorage.getItem("role")
 
   return (
     <List
@@ -45,28 +47,36 @@ const MainListItems = () => {
         </ListItemIcon>
         <ListItemText primary="Orders" />
       </ListItemButton>
-      <Link to={`/`} style={{ textDecoration: 'none', color: '#333' }}>
-        <ListItemButton>
-          <ListItemIcon>
-            <PeopleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Sellers" />
-        </ListItemButton>
-      </Link>
-      <ListItemButton>
-        <ListItemIcon>
-          <BarChartIcon />
-        </ListItemIcon>
-        <ListItemText primary="Buyers" />
-      </ListItemButton>
-      <Link to={`/products`} style={{ textDecoration: 'none', color: '#333' }}>
-      <ListItemButton>
-        <ListItemIcon>
-          <LayersIcon />
-        </ListItemIcon>
-        <ListItemText primary="Products" />
-        </ListItemButton>
+      {role == 'admin' && accessToken &&
+        < Link to={`/buyers`} style={{ textDecoration: 'none', color: '#333' }}>
+          <ListItemButton>
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sellers" />
+          </ListItemButton>
         </Link>
+      }
+      {role == 'admin' && accessToken &&
+        <Link to={`/buyers`} style={{ textDecoration: 'none', color: '#333' }}>
+          <ListItemButton>
+            <ListItemIcon>
+              <BarChartIcon />
+            </ListItemIcon>
+            <ListItemText primary="Buyers" />
+          </ListItemButton>
+        </Link>
+      }
+      {role == 'sellers' && accessToken &&
+        <Link to={`/products`} style={{ textDecoration: 'none', color: '#333' }}>
+          <ListItemButton>
+            <ListItemIcon>
+              <LayersIcon />
+            </ListItemIcon>
+            <ListItemText primary="Products" />
+          </ListItemButton>
+        </Link>
+      }
       {/* <ListItemButton onClick={handleClick}>
         <ListItemIcon>
           <LayersIcon />
@@ -101,7 +111,7 @@ const MainListItems = () => {
         </List>
       </Collapse> */}
 
-    </List>
+    </List >
   )
 }
 

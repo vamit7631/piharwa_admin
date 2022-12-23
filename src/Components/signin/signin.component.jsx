@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getsigninFn } from '../../services/commonservice';
-
+import Alert from '@mui/material/Alert';
 
 function Copyright(props) {
   return (
@@ -37,7 +37,7 @@ const SignIn = () => {
 
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (event) => {
 
@@ -53,8 +53,12 @@ const SignIn = () => {
     let response = await getsigninFn(loginData);
     if (response.status == true) {
       let accessToken = response.accessToken
+      let role = response.role
+      sessionStorage.setItem("role", role)
       sessionStorage.setItem("accessToken", accessToken)
       navigate('/dashboard');
+    } else {
+        setErrorMessage('Invalid Username/Password');
     }
   };
 
@@ -122,6 +126,11 @@ const SignIn = () => {
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
+            </Grid>
+            <Grid sx={{ mt: 2 }}>
+              {errorMessage && (
+                <Alert severity="error">{errorMessage}</Alert>
+              )}
             </Grid>
           </Box>
         </Box>

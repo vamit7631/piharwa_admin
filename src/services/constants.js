@@ -1,6 +1,6 @@
-export const APP_URL_DEV = `http://piharwa.co.in/api/v1/`;
+// export const APP_URL_DEV = `http://piharwa.co.in/api/v1/`;
 
-// export const APP_URL_DEV = `http://localhost:3001/api/v1/`;
+ export const APP_URL_DEV = `http://localhost:3001/api/v1/`;
 
 export const SIGNIN_URL = APP_URL_DEV + `user/login`;
 
@@ -12,6 +12,7 @@ export const DELETE_SINGLE_PRODUCT = APP_URL_DEV + `product/delete/`;
 
 export const GET_ALL_CATEGORIES = APP_URL_DEV + `category/list`;
 
+export const GET_ALL_BUYERS = APP_URL_DEV + `buyer/list/details`;
 
 // upload images Api's
 
