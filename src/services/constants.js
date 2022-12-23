@@ -1,6 +1,6 @@
-// export const APP_URL_DEV = `http://piharwa.co.in/api/v1/`;
+ export const APP_URL_DEV = `http://piharwa.co.in/api/v1/`;
 
- export const APP_URL_DEV = `http://localhost:3001/api/v1/`;
+//  export const APP_URL_DEV = `http://localhost:3001/api/v1/`;
 
 export const SIGNIN_URL = APP_URL_DEV + `user/login`;
 
