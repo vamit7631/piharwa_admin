@@ -12,7 +12,7 @@ import Radio from '@mui/material/Radio';
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { getAllCategories } from '../../services/categoryservice';
+import { getAllCategories, getRootCategories } from '../../services/categoryservice';
 import { addProductFn, uploadProductImage } from '../../services/productservice'
 import FolderIcon from '@mui/icons-material/Folder';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
@@ -34,6 +34,10 @@ const Products = () => {
   )
 
   const [checked, setChecked] = useState(false);
+  const [rootcategories, setRootCategories] = useState([]);
+  const [rootcategoryVal, setRootCategoryVal] = useState()
+
+
   const [categories, setCategories] = useState([]);
   const [availableStock, setAvailableStock] = useState(true);
 
@@ -47,21 +51,28 @@ const Products = () => {
 
 
   useEffect(() => {
-    const getCategoriesFn = async () => {
-      const response = await getAllCategories();
-      setCategories(response.data)
+
+    const getRootCategoriesFn = async () => {
+      const response = await getRootCategories();
+      setRootCategories(response.data)
     }
-    getCategoriesFn();
-
-
+    getRootCategoriesFn();
 
   }, [])
+
+
+
+  const getCategoriesFn = async (rootCategoryId) => {
+    const response = await getAllCategories(rootCategoryId);
+    setCategories(response.data)
+  }
 
 
   var getInitialValues = () => {
     return {
       productTitle: "",
       productSKU: "",
+      rootCategoryId: "",
       productCategoryID: "",
       price: "",
       currency: "inr",
@@ -122,6 +133,7 @@ const Products = () => {
 
   }
 
+
   const handleChange = (event) => {
     setCategoryVal(event.target.value)
     setFormData((data) => ({
@@ -140,6 +152,7 @@ const Products = () => {
       for (let i = 0; i < thumbnailimg.length; i++) {
         await uploadProductImage(productID, thumbnailimg[i], accessToken)
       }
+      alert("Product Added Successfully!")
       navigate('/products/update/' + productID);
     }
   }
@@ -415,44 +428,87 @@ const Products = () => {
           </Box>
         </Paper>
       </Grid>
+
+
       <Grid item xs={12} md={4} lg={4}>
-        <Paper
-          sx={{
-            p: 2,
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-
-          <TreeView
-            aria-label="file system navigator"
-            defaultCollapseIcon={<FolderOpenIcon color="action" />}
-            defaultExpandIcon={<FolderIcon color="action" />}
-            sx={{ flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+        <Grid sx={{ mb: 4 }}>
+          <Paper
+            sx={{
+              p: 2,
+              display: 'flex',
+              flexDirection: 'column',
+            }}
           >
-            {categories.map((item, index) => (
-              <TreeItem nodeId={item._id} label={item.categoryTitle}>
-                {item.children.map((c, i) => (c.children.length > 0 ?
-                  <TreeItem nodeId={c._id} label={c.categoryTitle}>
-                    {c.children.map((x, u) => (
-                      <TreeItem nodeId={x._id} label={
-                        <FormControlLabel control={<Checkbox value={x._id} onChange={handleChange} />} key={x._id} label={x.categoryTitle} />
-                      }></TreeItem>
-                    ))
-                    }
+            <FormControl fullWidth>
+              <InputLabel id="helper-label">Product For</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="productRootCategoryId"
+                name="rootCategoryId"
+                value={rootcategoryVal}
+                label="Product For" >
+                {rootcategories.map((item, index) => (
+                  <MenuItem value={item._id}
+                    onClick={() => {
+                      setRootCategoryVal(item._id)
+                      getCategoriesFn(item._id);
+                      setFormData((data) => ({
+                        ...data,
+                        rootCategoryId: item._id,
+                      })
+                      )
+                    }}
+                  >{item.categoryTitle}</MenuItem>
+                ),
+                )}
 
+
+              </Select>
+            </FormControl>
+          </Paper>
+        </Grid>
+
+
+
+        {rootcategoryVal &&
+          <Grid>
+            <Paper
+              sx={{
+                p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+
+              <TreeView
+                aria-label="file system navigator"
+                defaultCollapseIcon={<FolderOpenIcon color="action" />}
+                defaultExpandIcon={<FolderIcon color="action" />}
+                sx={{ flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+              >
+                {categories.map((item, index) => (
+                  <TreeItem nodeId={item._id} label={item.categoryTitle}>
+                    {item.children.map((c, i) => (c.children.length > 0 ?
+                      <TreeItem nodeId={c._id} label={c.categoryTitle}>
+                        {c.children.map((x, u) => (
+                          <TreeItem nodeId={x._id} label={
+                            <FormControlLabel control={<Checkbox value={x._id} onChange={handleChange} />} key={x._id} label={x.categoryTitle} />
+                          }></TreeItem>
+                        ))
+                        }
+
+                      </TreeItem>
+                      : <TreeItem nodeId={c._id} label={<FormControlLabel control={<Checkbox value={c._id} onChange={handleChange} />} key={c._id} label={c.categoryTitle} />}></TreeItem>))}
                   </TreeItem>
-                  : <TreeItem nodeId={c._id} label={<FormControlLabel control={<Checkbox value={c._id} onChange={handleChange} />} key={c._id} label={c.categoryTitle} />}></TreeItem>))}
-              </TreeItem>
-            ))}
-          </TreeView>
+                ))}
+              </TreeView>
 
 
 
-        </Paper>
+            </Paper>
+          </Grid>
+        }
       </Grid>
-
-
 
     </CommonComp>
   )

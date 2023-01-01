@@ -53,6 +53,7 @@ const ProductList = () => {
                 <TableCell>TITLE</TableCell>
                 <TableCell>SKUID</TableCell>
                 <TableCell>PRICE</TableCell>
+                <TableCell>PRODUCT FOR</TableCell>
                 <TableCell>CREATED AT</TableCell>
                 <TableCell>Edit</TableCell>
                 <TableCell>Delete</TableCell>
@@ -63,6 +64,7 @@ const ProductList = () => {
                 <TableCell>{product.productTitle}</TableCell>
                 <TableCell>{product.productSKU}</TableCell>
                 <TableCell>{product.price}</TableCell>
+                <TableCell>{product.rootCategoryName.toUpperCase()}</TableCell>
                 <TableCell>{moment(product.createdAt).format('DD-MM-YYYY')}</TableCell>
 
                 <TableCell> <Link to={`/products/update/` + product.productId} style={{ textDecoration: 'none' , color : '#444' }}><BorderColorTwoToneIcon /></Link></TableCell>

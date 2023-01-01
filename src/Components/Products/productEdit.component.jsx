@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import CommonComp from '../Common/common.component'
 import Title from '../Title/title.component';
-import { getAllCategories } from '../../services/categoryservice';
+import { getAllCategories, getRootCategories } from '../../services/categoryservice';
 import { getSingleProduct } from '../../services/productservice'
 import { Box, Grid, FormControl, FormControlLabel, InputLabel, Select, MenuItem, Checkbox, Button, TextField, Paper, ListSubheader, Switch } from '@mui/material';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
@@ -17,6 +17,7 @@ import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import { updateSingleProduct } from '../../services/productservice';
 const ProductEdit = () => {
     let pid = useParams();
+    const navigate = useNavigate();
     let productId = pid.id;
 
     let accessToken = sessionStorage.getItem("accessToken")
@@ -26,6 +27,7 @@ const ProductEdit = () => {
             productId: "",
             productTitle: "",
             productSKU: "",
+            rootCategoryId: "",
             productCategoryID: "",
             price: "",
             currency: "inr",
@@ -44,11 +46,12 @@ const ProductEdit = () => {
     let imageObj = [];
 
     useEffect(() => {
-        const getCategoriesFn = async () => {
-            const response = await getAllCategories();
-            setCategories(response.data)
-        }
-        getCategoriesFn();
+
+        const getRootCategoriesFn = async () => {
+            const response = await getRootCategories();
+            setRootCategories(response.data)
+          }
+          getRootCategoriesFn();
 
         const getSingleProductFn = async () => {
             const response = await getSingleProduct(productId);
@@ -61,7 +64,6 @@ const ProductEdit = () => {
                 formValues.price = productData.price
                 setCurrencyVal(productData.currency)
                 formValues.currency = productData.currency
-
                 setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(productData.productDescription))))
                 formValues.productDescription = productData.productDescription
                 setproductDetails(productData.productDetails)
@@ -80,7 +82,10 @@ const ProductEdit = () => {
 
 
 
-
+    const getCategoriesFn = async (rootCategoryId) => {
+        const response = await getAllCategories(rootCategoryId);
+        setCategories(response.data)
+    }
 
 
     var initialValues = getInitialValues();
@@ -151,6 +156,8 @@ const ProductEdit = () => {
 
 
     const [checked, setChecked] = useState(false);
+    const [rootcategories, setRootCategories] = useState([]);
+    const [rootcategoryVal, setRootCategoryVal] = useState()
     const [categories, setCategories] = useState([]);
     // const [catCheckBox, setCatCheckBox] = useState(false)
     const [categoryVal, setCategoryVal] = useState();
@@ -159,14 +166,14 @@ const ProductEdit = () => {
 
 
     const handleimageUpload = (e) => {
-      for (let i = 0; i < e.target.files.length; i++) {
-        let imageSrc = URL.createObjectURL(e.target.files[i]);
-        imageObj.push(imageSrc)
-        imgUrl.push(e.target.files[i])
-      }
-      setThumbnailimg(imgUrl)
-      setThumbnails(imageObj);
-  
+        for (let i = 0; i < e.target.files.length; i++) {
+            let imageSrc = URL.createObjectURL(e.target.files[i]);
+            imageObj.push(imageSrc)
+            imgUrl.push(e.target.files[i])
+        }
+        setThumbnailimg(imgUrl)
+        setThumbnails(imageObj);
+
     }
 
 
@@ -187,9 +194,10 @@ const ProductEdit = () => {
     const onDataSubmit = async (event) => {
         event.preventDefault();
         let response = await updateSingleProduct(formData, accessToken)
-        // if (response.status === true) {
-        //   navigate('/products');
-        // }
+        if (response.status === true) {
+            alert("Product Updated Successfully!")
+            navigate('/products');
+        }
 
     }
 
@@ -391,36 +399,36 @@ const ProductEdit = () => {
 
                         </Grid>
 
-                        
+
 
                         <Grid container spacing={2} mt={6} mb={2} borderTop={1} borderColor={'#ccc'}>
-              {thumbnails.map((imageSrc, index) => (
-                <Box textAlign={'center'}>
-                  <Box key={index} sx={{ display: 'flex', justifyContent: 'center' }} mt={4}>
-                    <Box sx={{ border: 1, borderColor: '#ddd', width: '7rem', height: '7rem', m: 1 }}
-                      display="flex" justifyContent="center" textAlign={'center'} alignItems="center">
-                      <img src={imageSrc} alt="not fount" width={"100px"} height={"100px"} />
-                    </Box>
-                  </Box>
-                </Box>
-              ))}
+                            {thumbnails.map((imageSrc, index) => (
+                                <Box textAlign={'center'}>
+                                    <Box key={index} sx={{ display: 'flex', justifyContent: 'center' }} mt={4}>
+                                        <Box sx={{ border: 1, borderColor: '#ddd', width: '7rem', height: '7rem', m: 1 }}
+                                            display="flex" justifyContent="center" textAlign={'center'} alignItems="center">
+                                            <img src={imageSrc} alt="not fount" width={"100px"} height={"100px"} />
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            ))}
 
-              <Box sx={{ display: 'flex', justifyContent: 'center' }} mt={4}>
-                <Box sx={{ border: 1, borderColor: '#ddd', width: '7rem', height: '7rem', m: 1 }}
-                  display="flex" justifyContent="center" alignItems="center">
-                  <AddCircleOutlineOutlinedIcon color="disabled" transform='scale(1.8)' />
-                </Box>
-              </Box>
+                            <Box sx={{ display: 'flex', justifyContent: 'center' }} mt={4}>
+                                <Box sx={{ border: 1, borderColor: '#ddd', width: '7rem', height: '7rem', m: 1 }}
+                                    display="flex" justifyContent="center" alignItems="center">
+                                    <AddCircleOutlineOutlinedIcon color="disabled" transform='scale(1.8)' />
+                                </Box>
+                            </Box>
 
 
 
-              <Grid item xs={3} mt={8}>
-                <input id="productImg" type="file" style={{ display: 'none' }} multiple onChange={handleimageUpload} />
-                <InputLabel htmlFor='productImg'> <Button variant="raised" component="span">
-                  <DriveFolderUploadOutlinedIcon transform='scale(1.8)' />
-                </Button></InputLabel>
-              </Grid>
-            </Grid>
+                            <Grid item xs={3} mt={8}>
+                                <input id="productImg" type="file" style={{ display: 'none' }} multiple onChange={handleimageUpload} />
+                                <InputLabel htmlFor='productImg'> <Button variant="raised" component="span">
+                                    <DriveFolderUploadOutlinedIcon transform='scale(1.8)' />
+                                </Button></InputLabel>
+                            </Grid>
+                        </Grid>
 
 
                         <Button
@@ -442,43 +450,84 @@ const ProductEdit = () => {
                     </Box>
                 </Paper>
             </Grid>
+
             <Grid item xs={12} md={4} lg={4}>
-                <Paper
-                    sx={{
-                        p: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                    }}
-                >
-
-                    <TreeView
-                        aria-label="file system navigator"
-                        defaultCollapseIcon={<FolderOpenIcon color="action" />}
-                        defaultExpandIcon={<FolderIcon color="action" />}
-                        sx={{ flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+                <Grid sx={{ mb: 4 }}>
+                    <Paper
+                        sx={{
+                            p: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}
                     >
-                        {categories.map((item, index) => (
-                            <TreeItem nodeId={item._id} label={item.categoryTitle}>
-                                {item.children.map((c, i) => (c.children.length > 0 ?
-                                    <TreeItem nodeId={c._id} label={c.categoryTitle}>
-                                        {c.children.map((x, u) => (
-                                            <TreeItem nodeId={x._id} label={
-                                                <FormControlLabel control={<Checkbox value={x._id} onChange={handleChange} />} key={x._id} label={x.categoryTitle} />
-                                            }></TreeItem>
-                                        ))
-                                        }
+                        <FormControl fullWidth>
+                            <InputLabel id="helper-label">Product For</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="productRootCategoryId"
+                                name="rootCategoryId"
+                                value={rootcategoryVal}
+                                label="Product For" >
+                                {rootcategories.map((item, index) => (
+                                    <MenuItem value={item._id}
+                                        onClick={() => {
+                                            setRootCategoryVal(item._id)
+                                            getCategoriesFn(item._id);
+                                            setFormData((data) => ({
+                                                ...data,
+                                                rootCategoryId: item._id,
+                                            })
+                                            )
+                                        }}
+                                    >{item.categoryTitle}</MenuItem>
+                                ),
+                                )}
 
+
+                            </Select>
+                        </FormControl>
+                    </Paper>
+                </Grid>
+
+                {rootcategoryVal &&
+                    <Grid>
+                        <Paper
+                            sx={{
+                                p: 2,
+                                display: 'flex',
+                                flexDirection: 'column',
+                            }}
+                        >
+
+                            <TreeView
+                                aria-label="file system navigator"
+                                defaultCollapseIcon={<FolderOpenIcon color="action" />}
+                                defaultExpandIcon={<FolderIcon color="action" />}
+                                sx={{ flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+                            >
+                                {categories.map((item, index) => (
+                                    <TreeItem nodeId={item._id} label={item.categoryTitle}>
+                                        {item.children.map((c, i) => (c.children.length > 0 ?
+                                            <TreeItem nodeId={c._id} label={c.categoryTitle}>
+                                                {c.children.map((x, u) => (
+                                                    <TreeItem nodeId={x._id} label={
+                                                        <FormControlLabel control={<Checkbox value={x._id} onChange={handleChange} />} key={x._id} label={x.categoryTitle} />
+                                                    }></TreeItem>
+                                                ))
+                                                }
+
+                                            </TreeItem>
+                                            : <TreeItem nodeId={c._id} label={<FormControlLabel control={<Checkbox value={c._id} onChange={handleChange} />} key={c._id} label={c.categoryTitle} />}></TreeItem>))}
                                     </TreeItem>
-                                    : <TreeItem nodeId={c._id} label={<FormControlLabel control={<Checkbox value={c._id} onChange={handleChange} />} key={c._id} label={c.categoryTitle} />}></TreeItem>))}
-                            </TreeItem>
-                        ))}
-                    </TreeView>
+                                ))}
+                            </TreeView>
 
 
 
-                </Paper>
+                        </Paper>
+                    </Grid>
+                }
             </Grid>
-
 
         </CommonComp>
     )
